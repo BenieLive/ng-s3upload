@@ -34,7 +34,8 @@ angular.module('ngS3upload.directives', []).
               uploadingKey: 'uploading',
               folder: '',
               enableValidation: true,
-              targetFilename: null
+              targetFilename: null,
+              headers: {}
             }, opts);
             var bucket = scope.$eval(attrs.bucket);
 
@@ -70,7 +71,8 @@ angular.module('ngS3upload.directives', []).
                     s3Options.key,
                     s3Options.policy,
                     s3Options.signature,
-                    selectedFile
+                    selectedFile,
+                    opts.headers
                   ).then(function () {
                     ngModel.$setViewValue(s3Uri + key);
                     scope.filename = ngModel.$viewValue;
