@@ -35,6 +35,7 @@ angular.module('ngS3upload.directives', []).
               folder: '',
               enableValidation: true,
               targetFilename: null,
+              allowedTypes: ['image/jpeg', 'image/png'],
               headers: {}
             }, opts);
             var bucket = scope.$eval(attrs.bucket);
@@ -59,6 +60,14 @@ angular.module('ngS3upload.directives', []).
               S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
                 if (opts.enableValidation) {
                   ngModel.$setValidity('uploading', false);
+                }
+
+                if (opts.allowedTypes) {
+                  if (opts.allowedTypes.indexOf(selectedFile.type) === -1) {
+                    alert("Invalid image format.\nPlease select a .jpg or .png");
+                    file.val(null);
+                    return false;
+                  }
                 }
 
                 var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';

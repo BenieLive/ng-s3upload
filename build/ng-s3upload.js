@@ -61,6 +61,10 @@ angular.module('ngS3upload.config', []).
 
       var fd = new FormData();
 
+      for (var k in headers) {
+        fd.append(k, headers[k]);
+      }
+
       fd.append('key', key);
       fd.append('acl', acl);
       fd.append('Content-Type', file.type);
@@ -68,8 +72,6 @@ angular.module('ngS3upload.config', []).
       fd.append('policy', policy);
       fd.append('signature', signature);
       fd.append("file", file);
-
-      for (var k in headers) fd.append(k, headers[k]);
 
       var xhr = new XMLHttpRequest();
       xhr.upload.addEventListener("progress", uploadProgress, false);
@@ -181,6 +183,7 @@ angular.module('ngS3upload.directives', []).
               folder: '',
               enableValidation: true,
               targetFilename: null,
+              allowedTypes: ['image/jpeg', 'image/png'],
               headers: {}
             }, opts);
             var bucket = scope.$eval(attrs.bucket);
@@ -205,6 +208,15 @@ angular.module('ngS3upload.directives', []).
               S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
                 if (opts.enableValidation) {
                   ngModel.$setValidity('uploading', false);
+                }
+
+                if (opts.allowedTypes) {
+                  if (opts.allowedTypes.indexOf(selectedFile.type) === -1) {
+                    console.log(scope);
+                    file.val(null);
+                    alert("Invalid image format.\nPlease select a .jpg or .png");
+                    return false;
+                  }
                 }
 
                 var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';

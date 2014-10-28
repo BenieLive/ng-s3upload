@@ -30,6 +30,10 @@ angular.module('ngS3upload.services', []).
 
       var fd = new FormData();
 
+      for (var k in headers) {
+        fd.append(k, headers[k]);
+      }
+
       fd.append('key', key);
       fd.append('acl', acl);
       fd.append('Content-Type', file.type);
@@ -37,8 +41,6 @@ angular.module('ngS3upload.services', []).
       fd.append('policy', policy);
       fd.append('signature', signature);
       fd.append("file", file);
-
-      for (var k in headers) fd.append(k, headers[k]);
 
       var xhr = new XMLHttpRequest();
       xhr.upload.addEventListener("progress", uploadProgress, false);
